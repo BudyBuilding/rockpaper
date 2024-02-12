@@ -1,119 +1,137 @@
-let currentPlayer = "X";
-const player = document.querySelector(".player");
-const message = document.querySelector(".message-box");
-const boxes = document.querySelectorAll(".content-box");
-const reset = document.querySelector(".reset-button");
+const rock = document.querySelector(".rock");
+const paper = document.querySelector(".paper");
+const scissors = document.querySelector(".scissors");
 
-const board = [
-  ["", "", ""],
-  ["", "", ""],
-  ["", "", ""],
-];
+const rockrand = document.querySelector(".rock-random");
+const paperrand = document.querySelector(".paper-random");
+const scissorsrand = document.querySelector(".scissors-random");
 
-reset.addEventListener("click", resetgame);
+const bottombutton = document.querySelectorAll(".bottom-button");
 
-boxes.forEach((box, index) => {
-  box.addEventListener("click", function () {
-    handleBoxClick(box, index);
-  });
+const message = document.querySelector(".message");
+const point = document.querySelector(".points");
+
+let comppoint = 0;
+let playerpoint = 0;
+
+point.innerHTML = playerpoint + "/" + comppoint;
+
+let playerChoice = "rock";
+
+rock.addEventListener("click", () => {
+  playerChoice = "rock";
+  startGame();
+});
+paper.addEventListener("click", () => {
+  playerChoice = "paper";
+  startGame();
 });
 
-//functions
-function handleBoxClick(box, index) {
-  if (box.innerHTML === "") {
-    box.innerHTML = currentPlayer;
+scissors.addEventListener("click", () => {
+  playerChoice = "scissors";
+  startGame();
+});
 
-    const row = Math.floor(index / 3);
-    const col = index % 3;
-    board[row][col] = currentPlayer;
+const strings = ["rock", "paper", "scissors"];
+const buttons = [rockrand, paperrand, scissorsrand];
 
-    if (checkforwins()) {
-      //here i have to block the clicking
+const computerChoice = getRandomString(strings);
 
-      blockClicks();
-    }
+function getRandomString(stringsArray) {
+  const randomIndex = Math.floor(Math.random() * stringsArray.length);
+  return stringsArray[randomIndex];
+}
+/////////////////////////
+function startGame() {
+  disablebuttons();
+  message.innerHTML = "";
+  console.log("it was pressed");
 
-    if (currentPlayer === "X") {
-      currentPlayer = "O";
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      buttons[i % 3].classList.remove("hidden");
+      setTimeout(() => {
+        buttons[i % 3].classList.add("hidden");
+      }, 100);
+    }, i * 200); // Adjust the delay time as needed
+  }
+
+  setTimeout(() => {
+    const computerChoice = getRandomString(strings);
+    const classs = "." + computerChoice + "-random";
+    const comp = document.querySelector(classs);
+
+    comp.classList.remove("hidden");
+
+    // Game logic conditions
+    if (
+      (playerChoice === "rock" && computerChoice === "scissors") ||
+      (playerChoice === "scissors" && computerChoice === "paper") ||
+      (playerChoice === "paper" && computerChoice === "rock")
+    ) {
+      gamewin();
+    } else if (playerChoice === computerChoice) {
+      gametie();
     } else {
-      currentPlayer = "X";
+      gamelose();
     }
 
-    message.innerHTML = "Player " + currentPlayer + " turn";
-  }
+    enablebuttons();
+  }, 2000); // Adjust the delay before showing the computer's choice
 }
 
-function resetgame() {
-  console.log("resetting");
-  currentPlayer = "X";
-  message.innerHTML = "Player " + currentPlayer + " turn";
-  boxes.forEach((box) => {
-    box.innerHTML = "";
-  });
-  unblockClicks();
-}
-
-function blockClicks() {
-  boxes.forEach((box) => {
-    box.classList.add("disable-interaction");
+/////////////////////////
+function enablebuttons() {
+  bottombutton.forEach((button) => {
+    button.classList.remove("disabled");
   });
 }
 
-function unblockClicks() {
-  boxes.forEach((box) => {
-    box.classList.remove("disable-interaction");
+function disablebuttons() {
+  bottombutton.forEach((button) => {
+    button.classList.add("disabled");
   });
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      board[i][j] = "";
-    }
-  }
 }
 
-function checkforwins() {
-  for (let i = 0; i < 3; i++) {
-    console.log(board[i][0] + " " + board[i][1] + " " + board[i][2]);
-    if (
-      board[i][0] === board[i][1] &&
-      board[i][1] === board[i][2] &&
-      board[i][0] !== ""
-    ) {
-      message.innerHTML = "Player " + currentPlayer + " won";
-      console.log("won");
-      return true;
-    }
-  }
-
-  for (let i = 0; i < 3; i++) {
-    if (
-      board[0][i] === board[1][i] &&
-      board[2][i] === board[1][i] &&
-      board[1][i] != ""
-    ) {
-      message.innerHTML = "Player " + currentPlayer + " won";
-      console.log("won");
-      return true;
-    }
-  }
-
-  if (
-    board[0][0] === board[1][1] &&
-    board[2][2] === board[1][1] &&
-    board[1][1] != ""
-  ) {
-    message.innerHTML = "Player " + currentPlayer + " won";
-    console.log("won");
-    return true;
-  }
-
-  if (
-    board[0][2] === board[1][1] &&
-    board[2][0] === board[1][1] &&
-    board[1][1] != ""
-  ) {
-    message.innerHTML = "Player " + currentPlayer + " won";
-    console.log("won");
-    return true;
-  }
-  return false;
+function gamewin() {
+  playerpoint++;
+  point.innerHTML = playerpoint + "/" + comppoint;
+  message.innerHTML = "You won!";
+  enablebuttons();
 }
+
+function gametie() {
+  message.innerHTML = "It's a tie!";
+  enablebuttons();
+}
+
+function gamelose() {
+  comppoint++;
+  point.innerHTML = playerpoint + "/" + comppoint;
+  message.innerHTML = "You lost!";
+  enablebuttons();
+}
+
+// if (
+//   (playerChoice === "rock" && computerChoice === "scissor") ||
+//   (playerChoice === "scissor" && computerChoice === "paper") ||
+//   (playerChoice === "paper" && computerChoice === "parockper")
+// ) {
+//   gamewin();
+// }
+
+// if (
+//   (playerChoice === "rock" && computerChoice === "rock") ||
+//   (playerChoice === "scissor" && computerChoice === "scissor") ||
+//   (playerChoice === "paper" && computerChoice === "paper")
+// ) {
+//   gametie();
+// }
+
+// if (
+//   (playerChoice === "rock" && computerChoice === "paper") ||
+//   (playerChoice === "scissor" && computerChoice === "rock") ||
+//   (playerChoice === "paper" && computerChoice === "scissor")
+// ) {
+//   gamelose();
+// }
