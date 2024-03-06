@@ -46,7 +46,12 @@ function startGame() {
   disablebuttons();
   message.innerHTML = "";
   console.log("it was pressed");
-
+  for (let i = 0; i < 3; i++) {
+    if (!buttons[i].classList.contains["hidden"]) {
+      buttons[i].classList.add("hidden");
+    }
+  }
+//  buttons[i % 3].classList.add("hidden");
   for (let i = 0; i < 10; i++) {
     setTimeout(() => {
       buttons[i % 3].classList.remove("hidden");
@@ -111,27 +116,3 @@ function gamelose() {
   message.innerHTML = "You lost!";
   enablebuttons();
 }
-
-// if (
-//   (playerChoice === "rock" && computerChoice === "scissor") ||
-//   (playerChoice === "scissor" && computerChoice === "paper") ||
-//   (playerChoice === "paper" && computerChoice === "parockper")
-// ) {
-//   gamewin();
-// }
-
-// if (
-//   (playerChoice === "rock" && computerChoice === "rock") ||
-//   (playerChoice === "scissor" && computerChoice === "scissor") ||
-//   (playerChoice === "paper" && computerChoice === "paper")
-// ) {
-//   gametie();
-// }
-
-// if (
-//   (playerChoice === "rock" && computerChoice === "paper") ||
-//   (playerChoice === "scissor" && computerChoice === "rock") ||
-//   (playerChoice === "paper" && computerChoice === "scissor")
-// ) {
-//   gamelose();
-// }
